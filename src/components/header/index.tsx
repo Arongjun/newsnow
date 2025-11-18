@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router"
 import { useIsFetching } from "@tanstack/react-query"
 import type { SourceID } from "@shared/types"
 import { NavBar } from "../navbar"
-import { Menu } from "./menu"
 import { currentSourcesAtom, goToTopAtom } from "~/atoms"
 
 function GoTop() {
@@ -17,9 +16,22 @@ function GoTop() {
   )
 }
 
-function Github() {
+function LoginButton() {
+  const { loggedIn, login, userInfo, enableLogin } = useLogin()
+  if (!enableLogin) return null
   return (
-    <button type="button" title="Github" className="i-ph:github-logo-duotone btn" onClick={() => window.open(Homepage)} />
+    loggedIn && userInfo.avatar
+      ? (
+          <button
+            type="button"
+            title="已登录"
+            className="h-6 w-6 rounded-full bg-cover"
+            style={{ backgroundImage: `url(${userInfo.avatar}&s=24)` }}
+          />
+        )
+      : (
+          <button type="button" title="Github 账号登录" className="btn i-ph:sign-in-duotone" onClick={login} />
+        )
   )
 }
 
@@ -71,8 +83,7 @@ export function Header() {
       <span className="justify-self-end flex gap-2 items-center text-xl text-primary-600 dark:text-primary">
         <GoTop />
         <Refresh />
-        <Github />
-        <Menu />
+        <LoginButton />
       </span>
     </>
   )
